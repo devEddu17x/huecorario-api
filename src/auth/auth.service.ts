@@ -1,13 +1,13 @@
-import {Injectable} from '@nestjs/common';
-import {CreateStudentDTO} from 'src/student/dtos/create-student.dto';
-import {StudentService} from 'src/student/student.service';
-import {generateCode} from './helpers/code-generator.helper';
-import {CacheService} from 'src/cache/cache.service';
-import {CreateEmailResponse} from 'nestjs-resend';
-import {renderTemplate} from 'src/mail/mail.template';
-import {Template} from 'src/common/enums/template.enum';
-import {EmailTakenError} from 'src/common/errors/email-taken.error';
-import {ResendService} from 'src/mail/resend.service';
+import { Injectable } from '@nestjs/common';
+import { CreateStudentDTO } from 'src/student/dtos/create-student.dto';
+import { StudentService } from 'src/student/student.service';
+import { generateCode } from './helpers/code-generator.helper';
+import { CacheService } from 'src/cache/cache.service';
+import { CreateEmailResponse } from 'nestjs-resend';
+import { renderTemplate } from 'src/mail/mail.template';
+import { Template } from 'src/common/enums/template.enum';
+import { EmailTakenError } from 'src/common/errors/email-taken.error';
+import { ResendService } from 'src/mail/resend.service';
 
 @Injectable()
 export class AuthService {

@@ -1,8 +1,8 @@
-import {Model} from 'mongoose';
-import {Injectable} from '@nestjs/common';
-import {InjectModel} from '@nestjs/mongoose';
-import {Student} from './schemas/student.schema';
-import {CreateStudentDTO} from './dtos/create-student.dto';
+import { Model } from 'mongoose';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Student } from './schemas/student.schema';
+import { CreateStudentDTO } from './dtos/create-student.dto';
 
 @Injectable()
 export class StudentService {
@@ -16,7 +16,7 @@ export class StudentService {
   }
 
   async emailIsAvailable(email: string): Promise<boolean> {
-    const student = await this.studentModel.findOne({email});
+    const student = await this.studentModel.findOne({ email });
     return !student;
   }
 }

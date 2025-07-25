@@ -1,9 +1,9 @@
-import {Module} from '@nestjs/common';
-import {AuthController} from './auth.controller';
-import {StudentModule} from 'src/student/student.module';
-import {AuthService} from './auth.service';
-import {CacheModule} from 'src/cache/cache.module';
-import {MailModule} from 'src/mail/mail.module';
+import { Module } from '@nestjs/common';
+import { AuthController } from './auth.controller';
+import { StudentModule } from 'src/student/student.module';
+import { AuthService } from './auth.service';
+import { CacheModule } from 'src/cache/cache.module';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [StudentModule, CacheModule, MailModule],

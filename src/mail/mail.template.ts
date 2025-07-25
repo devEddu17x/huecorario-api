@@ -1,7 +1,7 @@
-import {readFile} from 'fs/promises';
+import { readFile } from 'fs/promises';
 import * as Handlebars from 'handlebars';
-import {join} from 'path';
-import {Template} from 'src/common/enums/template.enum';
+import { join } from 'path';
+import { Template } from 'src/common/enums/template.enum';
 
 export async function renderTemplate(
   templateName: Template,

@@ -1,6 +1,6 @@
-import {Injectable} from '@nestjs/common';
-import {ConfigService} from '@nestjs/config';
-import {Redis} from '@upstash/redis';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Redis } from '@upstash/redis';
 @Injectable()
 export class CacheService {
   private cacheService: Redis;
@@ -12,7 +12,7 @@ export class CacheService {
   }
 
   async setData<T>(key: string, value: T, ttl?: number): Promise<void> {
-    await this.cacheService.set(key, value, {ex: ttl});
+    await this.cacheService.set(key, value, { ex: ttl });
   }
 
   async getData<T>(key: string): Promise<T | null> {

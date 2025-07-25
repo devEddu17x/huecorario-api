@@ -11,7 +11,7 @@ import {
   Max,
   IsMongoId,
 } from 'class-validator';
-import {Campus} from 'src/common/enums/campus.enum';
+import { Campus } from 'src/common/enums/campus.enum';
 
 export class CreateStudentDTO {
   @IsNotEmpty()

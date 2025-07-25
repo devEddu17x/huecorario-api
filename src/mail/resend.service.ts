@@ -1,6 +1,6 @@
-import {Injectable} from '@nestjs/common';
-import {ConfigService} from '@nestjs/config';
-import {CreateEmailResponse, Resend} from 'resend';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { CreateEmailResponse, Resend } from 'resend';
 @Injectable()
 export class ResendService {
   private readonly resendService: Resend;
