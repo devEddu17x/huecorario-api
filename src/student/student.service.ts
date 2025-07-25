@@ -6,10 +6,17 @@ import {CreateStudentDTO} from './dtos/create-student.dto';
 
 @Injectable()
 export class StudentService {
-  constructor(@InjectModel(Student.name) private catModel: Model<Student>) {}
+  constructor(
+    @InjectModel(Student.name) private studentModel: Model<Student>,
+  ) {}
 
   async create(createStudentDTO: CreateStudentDTO): Promise<Student> {
-    const createdStudent = new this.catModel(createStudentDTO);
+    const createdStudent = new this.studentModel(createStudentDTO);
     return createdStudent.save();
+  }
+
+  async emailIsAvailable(email: string): Promise<boolean> {
+    const student = await this.studentModel.findOne({email});
+    return !student;
   }
 }
