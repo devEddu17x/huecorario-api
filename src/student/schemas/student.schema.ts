@@ -26,3 +26,10 @@ export class Student {
 }
 
 export const StudentSchema = SchemaFactory.createForClass(Student);
+
+StudentSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    delete ret.password;
+    return ret;
+  },
+});
