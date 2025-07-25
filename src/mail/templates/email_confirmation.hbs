@@ -1,0 +1,32 @@
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8' />
+    <title>Email Confirmation</title>
+    <style>
+      .container {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+      }
+      .code {
+        font-size: 24px;
+        color: #4caf50;
+        font-weight: bold;
+        margin: 20px 0;
+        text-align: center;
+        letter-spacing: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class='container'>
+      <h2>Welcome to Huecorario 🎓</h2>
+      <p>Use the following code to verify your email:</p>
+      <div class='code'>{{code}}</div>
+      <p>This code expires in 10 minutes.</p>
+    </div>
+  </body>
+</html>
