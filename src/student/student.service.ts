@@ -8,7 +8,7 @@ import {CreateStudentDTO} from './dtos/create-student.dto';
 export class StudentService {
   constructor(@InjectModel(Student.name) private catModel: Model<Student>) {}
 
-  async create(createStudentDTO: CreateStudentDTO) {
+  async create(createStudentDTO: CreateStudentDTO): Promise<Student> {
     const createdStudent = new this.catModel(createStudentDTO);
     return createdStudent.save();
   }
