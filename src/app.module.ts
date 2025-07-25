@@ -6,6 +6,9 @@ import authConfig from './config/auth.config';
 import databaseConfig from './config/database.config';
 import apiConfig from './config/api.config';
 import {MongooseModule} from '@nestjs/mongoose';
+import {StudentModule} from './student/student.module';
+import {ProgramService} from './program/program.service';
+import {ProgramModule} from './program/program.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,6 +23,8 @@ import {MongooseModule} from '@nestjs/mongoose';
       }),
       inject: [ConfigService],
     }),
+    StudentModule,
+    ProgramModule,
   ],
   controllers: [AppController],
   providers: [AppService],
