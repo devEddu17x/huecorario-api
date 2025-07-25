@@ -1,0 +1,4 @@
+export enum Campus {
+  TRUJILLO = 'CAMPUS PRINCIPAL TRUJILLO',
+  PIURA = 'CAMPUS PIURA',
+}
