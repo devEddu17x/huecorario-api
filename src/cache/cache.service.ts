@@ -16,8 +16,8 @@ export class CacheService {
   }
 
   async getData<T>(key: string): Promise<T | null> {
-    const data: string = await this.cacheService.get(key);
-    return data ? JSON.parse(data) : null;
+    const data: T = await this.cacheService.get(key);
+    return data;
   }
 
   async deleteData(key: string): Promise<void> {

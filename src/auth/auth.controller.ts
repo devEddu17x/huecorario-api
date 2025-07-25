@@ -1,6 +1,8 @@
 import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 import { CreateStudentDTO } from 'src/student/dtos/create-student.dto';
 import { AuthService } from './auth.service';
+import { VerifyEmailDTO } from './dtos/verify-email.dto';
+import { Student } from 'src/student/schemas/student.schema';
 
 @Controller('auth')
 export class AuthController {
@@ -14,5 +16,14 @@ export class AuthController {
     return {
       message: 'A verification email has been sent to your email address.',
     };
+  }
+
+  @Post('verify-email')
+  async verifyEmail(@Body() verifyEmailDTO: VerifyEmailDTO): Promise<Student> {
+    try {
+      return await this.authService.verifyEmail(verifyEmailDTO);
+    } catch (error) {
+      throw new BadRequestException('Invalid verification code or email.');
+    }
   }
 }

@@ -8,14 +8,25 @@ import { renderTemplate } from 'src/mail/mail.template';
 import { Template } from 'src/common/enums/template.enum';
 import { EmailTakenError } from 'src/common/errors/email-taken.error';
 import { ResendService } from 'src/mail/resend.service';
+import { VerifyEmailDTO } from './dtos/verify-email.dto';
+import * as bcrypt from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
+import { Student } from 'src/student/schemas/student.schema';
 
 @Injectable()
 export class AuthService {
+  private readonly rounds: number;
   constructor(
     private readonly studentService: StudentService,
     private readonly mailService: ResendService,
     private readonly cacheService: CacheService,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    this.rounds = this.configService.get<number>('bcrypt.rounds');
+    if (!this.rounds) {
+      throw new Error('Bcrypt rounds not configured');
+    }
+  }
   async register(
     createStudentDTO: CreateStudentDTO,
   ): Promise<CreateEmailResponse> {
@@ -46,5 +57,30 @@ export class AuthService {
       template,
     );
     return response;
+  }
+
+  async verifyEmail(verifyEmailDTO: VerifyEmailDTO): Promise<Student> {
+    const { email, verificationCode } = verifyEmailDTO;
+    const codeKey = `code:${email}`;
+    const cachedCode = await this.cacheService.getData<number>(codeKey);
+
+    if (!cachedCode) {
+      throw new Error('Verification code expired or invalid');
+    }
+
+    if (cachedCode !== verificationCode) {
+      throw new Error('Invalid verification code');
+    }
+
+    const studentKey: string = `student:${email}`;
+    const studentData: CreateStudentDTO =
+      await this.cacheService.getData<CreateStudentDTO>(studentKey);
+    if (!studentData) {
+      throw new Error('Student data not found');
+    }
+
+    studentData.password = await bcrypt.hash(studentData.password, this.rounds);
+
+    return await this.studentService.create(studentData);
   }
 }
