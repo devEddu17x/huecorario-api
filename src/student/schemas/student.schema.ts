@@ -13,7 +13,7 @@ export class Student {
   lastname: string;
   @Prop({ required: true, unique: true, lowercase: true, trim: true })
   email: string;
-  @Prop({ required: true, minlength: 8, maxlength: 30 })
+  @Prop({ required: true, length: 60 }) // bcrypt hashes are typically 60 characters long
   password: string;
   @Prop({ trim: true, match: /^[0-9]{9}$/ })
   phone: string;
