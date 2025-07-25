@@ -4,7 +4,7 @@ import {ResendService} from 'nestjs-resend';
 
 @Injectable()
 export class MailService {
-  from: string;
+  private from: string;
   constructor(
     private readonly resendService: ResendService,
     private readonly configService: ConfigService,
