@@ -5,3 +5,4 @@ export { default as mailConfig } from './mail.config';
 export { default as cacheConfig } from './cache.config';
 export { default as bcryptConfig } from './bcrypt.config';
 export { default as jwtConfig } from './jwt.config';
+export { default as appConfig } from './app.config';

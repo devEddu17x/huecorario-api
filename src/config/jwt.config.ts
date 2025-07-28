@@ -9,9 +9,9 @@ export default registerAs('jwt', () => {
   } = process.env;
 
   return {
-    secret: JWT_SECRET,
+    accessSecret: JWT_SECRET,
     refreshSecret: JWT_REFRESH_SECRET,
-    expiresIn: JWT_EXPIRES_IN,
+    accessExpiresIn: JWT_EXPIRES_IN,
     refreshExpiresIn: JWT_REFRESH_EXPIRES_IN,
   };
 });
