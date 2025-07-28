@@ -1,17 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateStudentDTO } from 'src/student/dtos/create-student.dto';
 import { StudentService } from 'src/student/student.service';
-import { generateCode } from './helpers/code-generator.helper';
+import { generateCode } from '../helpers/code-generator.helper';
 import { CacheService } from 'src/cache/cache.service';
 import { CreateEmailResponse } from 'nestjs-resend';
 import { renderTemplate } from 'src/mail/mail.template';
 import { Template } from 'src/common/enums/template.enum';
 import { EmailTakenError } from 'src/common/errors/email-taken.error';
 import { ResendService } from 'src/mail/resend.service';
-import { VerifyEmailDTO } from './dtos/verify-email.dto';
+import { VerifyEmailDTO } from '../dtos/verify-email.dto';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
-import { Student } from 'src/student/schemas/student.schema';
+import { Student, StudentDocument } from 'src/student/schemas/student.schema';
+import { AuthLoginDTO } from '../dtos/login.dto';
+import { Payload } from '../interfaces/payload.interface';
+import { TokenService } from './token.service';
+import { Response } from 'express';
+import { Token } from '../enums/tokens-name.enum';
+import { Environment } from 'src/common/enums/environment.enum';
+import { parseTimeString } from 'src/common/utils/parseTimeString';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +28,7 @@ export class AuthService {
     private readonly mailService: ResendService,
     private readonly cacheService: CacheService,
     private readonly configService: ConfigService,
+    private readonly tokenService: TokenService,
   ) {
     this.rounds = this.configService.get<number>('bcrypt.rounds');
     if (!this.rounds) {
@@ -82,5 +90,43 @@ export class AuthService {
     studentData.password = await bcrypt.hash(studentData.password, this.rounds);
 
     return await this.studentService.create(studentData);
+  }
+
+  async login(loginDTO: AuthLoginDTO, res: Response): Promise<any | null> {
+    const { email, password } = loginDTO;
+
+    const student = await this.studentService.validateStudent(email, password);
+    if (!student) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
+    const payload: Payload = {
+      sub: student._id.toString(),
+      email: student.email,
+    };
+    const { accessToken, refreshToken } =
+      await this.tokenService.generatePairTokens(payload);
+
+    const environment = this.configService.get<string>('app.environment');
+
+    res.cookie(Token.ACCESS_TOKEN, accessToken, {
+      httpOnly: true,
+      secure: environment == Environment.PRODUCTION,
+      sameSite: environment == Environment.PRODUCTION ? 'none' : 'lax',
+      maxAge: parseTimeString(
+        this.configService.get<string>('jwt.accessExpiresIn'),
+      ),
+      path: '/api',
+    });
+
+    res.cookie(Token.REFRESH_TOKEN, refreshToken, {
+      httpOnly: true,
+      secure: environment == Environment.PRODUCTION,
+      sameSite: environment == Environment.PRODUCTION ? 'none' : 'lax',
+      maxAge: parseTimeString(
+        this.configService.get<string>('jwt.refreshExpiresIn'),
+      ),
+      path: '/api/auth/refresh',
+    });
+    return student;
   }
 }

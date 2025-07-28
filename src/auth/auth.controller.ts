@@ -1,9 +1,18 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  HttpCode,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { CreateStudentDTO } from 'src/student/dtos/create-student.dto';
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
 import { VerifyEmailDTO } from './dtos/verify-email.dto';
 import { Student } from 'src/student/schemas/student.schema';
 import { mapResendError } from 'src/mail/helper/error-mapper.helper';
+import { AuthLoginDTO } from './dtos/login.dto';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -26,5 +35,14 @@ export class AuthController {
     } catch (error) {
       throw new BadRequestException('Invalid verification code or email.');
     }
+  }
+
+  @HttpCode(200)
+  @Post('login')
+  async login(
+    @Body() loginDTO: AuthLoginDTO,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return await this.authService.login(loginDTO, res);
   }
 }
