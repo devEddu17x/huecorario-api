@@ -1,6 +1,6 @@
-import {Injectable} from '@nestjs/common';
-import {ConfigService} from '@nestjs/config';
-import {ResendService} from 'nestjs-resend';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { CreateEmailResponse, ResendService } from 'nestjs-resend';
 
 @Injectable()
 export class MailService {
@@ -12,8 +12,12 @@ export class MailService {
     this.from = configService.get<string>('mail.from');
   }
 
-  async sendEmail(to: string, subject: string, html: string): Promise<void> {
-    await this.resendService.send({
+  async sendEmail(
+    to: string,
+    subject: string,
+    html: string,
+  ): Promise<CreateEmailResponse> {
+    return await this.resendService.send({
       from: this.from,
       to,
       subject,

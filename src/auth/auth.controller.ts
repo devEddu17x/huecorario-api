@@ -3,6 +3,7 @@ import { CreateStudentDTO } from 'src/student/dtos/create-student.dto';
 import { AuthService } from './auth.service';
 import { VerifyEmailDTO } from './dtos/verify-email.dto';
 import { Student } from 'src/student/schemas/student.schema';
+import { mapResendError } from 'src/mail/helper/error-mapper.helper';
 
 @Controller('auth')
 export class AuthController {
@@ -11,7 +12,7 @@ export class AuthController {
   async register(@Body() createStudentDTO: CreateStudentDTO): Promise<any> {
     const { data, error } = await this.authService.register(createStudentDTO);
     if (error) {
-      throw new BadRequestException(error.message);
+      throw new BadRequestException(mapResendError(error.name));
     }
     return {
       message: 'A verification email has been sent to your email address.',
