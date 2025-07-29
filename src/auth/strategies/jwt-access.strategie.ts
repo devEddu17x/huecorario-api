@@ -5,8 +5,12 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Payload } from '../interfaces/payload.interface';
 import { Request } from 'express';
 import { Token } from '../enums/tokens-name.enum';
+import { UserFromRequest } from '../interfaces/user-from-request.interface';
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-access') {
+export class AccessTokenStrategy extends PassportStrategy(
+  Strategy,
+  'jwt-access',
+) {
   constructor(private readonly configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -16,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-access') {
       ignoreExpiration: false,
     });
   }
-  validate(payload: Payload): any {
+  validate(payload: Payload): UserFromRequest {
     return { _id: payload.sub, email: payload.email };
   }
 }

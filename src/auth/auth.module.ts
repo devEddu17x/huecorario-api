@@ -9,7 +9,8 @@ import { TokenService } from './services/token.service';
 import { JwtService } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/jwt.auth.guard';
-import { JwtStrategy } from './strategies/jwt-access.strategie';
+import { AccessTokenStrategy } from './strategies/jwt-access.strategie';
+import { RefreshTokenStrategy } from './strategies/jwt-refresh.strategie';
 
 // ACCESS TOKEN PROVIDER
 const AccessTokenJwtProvider = {
@@ -46,7 +47,8 @@ const RefreshTokenJwtProvider = {
     TokenService,
     AccessTokenJwtProvider,
     RefreshTokenJwtProvider,
-    JwtStrategy,
+    AccessTokenStrategy,
+    RefreshTokenStrategy,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
