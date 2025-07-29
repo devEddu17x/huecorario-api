@@ -22,4 +22,28 @@ export class OwnScheduleService {
       throw new BadRequestException(`Error creating own schedule`);
     }
   }
+
+  async getById(id: string): Promise<OwnSchedule | null> {
+    try {
+      const ownSchedule = await this.ownScheduleModel
+        .findById(id)
+        .populate({
+          path: 'courseSelections.schedules',
+          populate: {
+            path: 'blocks.teacher',
+            select: 'id name', // Selecciona los campos que necesites del teacher
+          },
+        })
+        .exec();
+
+      if (!ownSchedule) {
+        throw new BadRequestException(`Own schedule with id ${id} not found`);
+      }
+      return ownSchedule;
+    } catch (error) {
+      throw new BadRequestException(
+        `Error fetching own schedule with id ${id}: ${error.message}`,
+      );
+    }
+  }
 }
