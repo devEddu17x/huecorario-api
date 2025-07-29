@@ -9,6 +9,9 @@ import { ProgramModule } from './program/program.module';
 import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
 import { CacheModule } from './cache/cache.module';
+import { CourseModule } from './course/course.module';
+// import { TeacherModule } from './teacher/teacher.module';
+// import { ScheduleModule } from './schedule/schedule.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -37,6 +40,9 @@ import { CacheModule } from './cache/cache.module';
     ProgramModule,
     MailModule,
     CacheModule,
+    CourseModule,
+    // TeacherModule,
+    // ScheduleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
