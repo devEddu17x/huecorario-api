@@ -7,6 +7,9 @@ import { MailModule } from 'src/mail/mail.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TokenService } from './services/token.service';
 import { JwtService } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './guards/jwt.auth.guard';
+import { JwtStrategy } from './strategies/jwt-access.strategie';
 
 // ACCESS TOKEN PROVIDER
 const AccessTokenJwtProvider = {
@@ -43,6 +46,11 @@ const RefreshTokenJwtProvider = {
     TokenService,
     AccessTokenJwtProvider,
     RefreshTokenJwtProvider,
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
   ],
 })
 export class AuthModule {}

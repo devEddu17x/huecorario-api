@@ -13,10 +13,12 @@ import { Student } from 'src/student/schemas/student.schema';
 import { mapResendError } from 'src/mail/helper/error-mapper.helper';
 import { AuthLoginDTO } from './dtos/login.dto';
 import { Response } from 'express';
+import { IsPublic } from 'src/common/decorators/is-public.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+  @IsPublic()
   @Post('register')
   async register(@Body() createStudentDTO: CreateStudentDTO): Promise<any> {
     const { data, error } = await this.authService.register(createStudentDTO);
@@ -27,7 +29,7 @@ export class AuthController {
       message: 'A verification email has been sent to your email address.',
     };
   }
-
+  @IsPublic()
   @Post('verify-email')
   async verifyEmail(@Body() verifyEmailDTO: VerifyEmailDTO): Promise<Student> {
     try {
@@ -36,7 +38,7 @@ export class AuthController {
       throw new BadRequestException('Invalid verification code or email.');
     }
   }
-
+  @IsPublic()
   @HttpCode(200)
   @Post('login')
   async login(
