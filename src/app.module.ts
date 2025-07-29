@@ -21,6 +21,7 @@ import { CacheModule } from './cache/cache.module';
         config.cacheConfig,
         config.bcryptConfig,
         config.jwtConfig,
+        config.appConfig,
       ],
     }),
     MongooseModule.forRootAsync({
