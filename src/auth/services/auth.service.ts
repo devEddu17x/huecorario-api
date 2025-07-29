@@ -136,6 +136,16 @@ export class AuthService {
     }
   }
 
+  async logout(res: Response) {
+    res.clearCookie(Token.ACCESS_TOKEN, {
+      path: '/api',
+    });
+    res.clearCookie(Token.REFRESH_TOKEN, {
+      path: '/api/auth/refresh',
+    });
+    return { message: 'Logged out successfully' };
+  }
+
   private async setTokensInCookies(payload: Payload, res: Response) {
     const { accessToken, refreshToken } =
       await this.tokenService.generatePairTokens(payload);
