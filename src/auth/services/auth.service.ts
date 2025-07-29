@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Req, UnauthorizedException } from '@nestjs/common';
 import { CreateStudentDTO } from 'src/student/dtos/create-student.dto';
 import { StudentService } from 'src/student/student.service';
 import { generateCode } from '../helpers/code-generator.helper';
@@ -15,10 +15,11 @@ import { Student, StudentDocument } from 'src/student/schemas/student.schema';
 import { AuthLoginDTO } from '../dtos/login.dto';
 import { Payload } from '../interfaces/payload.interface';
 import { TokenService } from './token.service';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { Token } from '../enums/tokens-name.enum';
 import { Environment } from 'src/common/enums/environment.enum';
 import { parseTimeString } from 'src/common/utils/parseTimeString';
+import { CustomRequest } from '../interfaces/custom-request.interface';
 
 @Injectable()
 export class AuthService {
@@ -92,10 +93,16 @@ export class AuthService {
     return await this.studentService.create(studentData);
   }
 
-  async login(loginDTO: AuthLoginDTO, res: Response): Promise<any | null> {
+  async login(
+    loginDTO: AuthLoginDTO,
+    res: Response,
+  ): Promise<{ student: StudentDocument; tokenExpiresIn: string }> {
     const { email, password } = loginDTO;
 
-    const student = await this.studentService.validateStudent(email, password);
+    const student: StudentDocument = await this.studentService.validateStudent(
+      email,
+      password,
+    );
     if (!student) {
       throw new UnauthorizedException('Invalid email or password');
     }
@@ -103,6 +110,33 @@ export class AuthService {
       sub: student._id.toString(),
       email: student.email,
     };
+    await this.setTokensInCookies(payload, res);
+    return {
+      student,
+      tokenExpiresIn: this.configService.get<string>('jwt.accessExpiresIn'),
+    };
+  }
+
+  async refreshTokens(req: CustomRequest, res: Response) {
+    try {
+      const tokenFromRequest = req.token;
+      const tokenFromCache = await this.cacheService.getData<string>(
+        `${Token.REFRESH_TOKEN}:${req.user.email}`,
+      );
+      if (tokenFromCache !== tokenFromRequest) {
+        throw new UnauthorizedException('Invalid refresh token');
+      }
+      const payload: Payload = { sub: req.user._id, email: req.user.email };
+      await this.setTokensInCookies(payload, res);
+      return {
+        tokenExpiresIn: this.configService.get<string>('jwt.accessExpiresIn'),
+      };
+    } catch (error) {
+      throw new UnauthorizedException('Failed to refresh tokens');
+    }
+  }
+
+  private async setTokensInCookies(payload: Payload, res: Response) {
     const { accessToken, refreshToken } =
       await this.tokenService.generatePairTokens(payload);
 
@@ -127,6 +161,5 @@ export class AuthService {
       ),
       path: '/api/auth/refresh',
     });
-    return student;
   }
 }

@@ -4,7 +4,9 @@ import {
   Controller,
   HttpCode,
   Post,
+  Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateStudentDTO } from 'src/student/dtos/create-student.dto';
 import { AuthService } from './services/auth.service';
@@ -12,13 +14,15 @@ import { VerifyEmailDTO } from './dtos/verify-email.dto';
 import { Student } from 'src/student/schemas/student.schema';
 import { mapResendError } from 'src/mail/helper/error-mapper.helper';
 import { AuthLoginDTO } from './dtos/login.dto';
-import { Response } from 'express';
-import { IsPublic } from 'src/common/decorators/is-public.decorator';
+import { Request, Response } from 'express';
+import { NoAccesTokenNeeded } from 'src/common/decorators/is-public.decorator';
+import { CustomRequest } from './interfaces/custom-request.interface';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-  @IsPublic()
+  @NoAccesTokenNeeded()
   @Post('register')
   async register(@Body() createStudentDTO: CreateStudentDTO): Promise<any> {
     const { data, error } = await this.authService.register(createStudentDTO);
@@ -29,7 +33,7 @@ export class AuthController {
       message: 'A verification email has been sent to your email address.',
     };
   }
-  @IsPublic()
+  @NoAccesTokenNeeded()
   @Post('verify-email')
   async verifyEmail(@Body() verifyEmailDTO: VerifyEmailDTO): Promise<Student> {
     try {
@@ -38,7 +42,7 @@ export class AuthController {
       throw new BadRequestException('Invalid verification code or email.');
     }
   }
-  @IsPublic()
+  @NoAccesTokenNeeded()
   @HttpCode(200)
   @Post('login')
   async login(
@@ -46,5 +50,16 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     return await this.authService.login(loginDTO, res);
+  }
+
+  @NoAccesTokenNeeded()
+  @UseGuards(JwtRefreshGuard)
+  @Post('refresh')
+  @HttpCode(200)
+  async refresh(
+    @Res({ passthrough: true }) res: Response,
+    @Req() req: CustomRequest,
+  ) {
+    return await this.authService.refreshTokens(req, res);
   }
 }
