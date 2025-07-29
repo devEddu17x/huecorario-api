@@ -12,6 +12,7 @@ import { CacheModule } from './cache/cache.module';
 import { CourseModule } from './course/course.module';
 import { TeacherModule } from './teacher/teacher.module';
 import { ScheduleModule } from './schedule/schedule.module';
+import { OwnScheduleModule } from './own-schedule/own-cycle-schedule.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -43,6 +44,7 @@ import { ScheduleModule } from './schedule/schedule.module';
     CourseModule,
     ScheduleModule,
     TeacherModule,
+    OwnScheduleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
