@@ -11,6 +11,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/jwt.auth.guard';
 import { AccessTokenStrategy } from './strategies/jwt-access.strategie';
 import { RefreshTokenStrategy } from './strategies/jwt-refresh.strategie';
+import { OwnScheduleModule } from 'src/own-schedule/own-cycle-schedule.module';
 
 // ACCESS TOKEN PROVIDER
 const AccessTokenJwtProvider = {
@@ -40,7 +41,13 @@ const RefreshTokenJwtProvider = {
 };
 
 @Module({
-  imports: [ConfigModule, StudentModule, CacheModule, MailModule],
+  imports: [
+    ConfigModule,
+    CacheModule,
+    MailModule,
+    StudentModule,
+    OwnScheduleModule,
+  ],
   controllers: [AuthController],
   providers: [
     AuthService,

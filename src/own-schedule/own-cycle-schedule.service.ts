@@ -70,29 +70,4 @@ export class OwnScheduleService {
       throw new BadRequestException(`Error fetching own schedules`);
     }
   }
-
-  async getByCycle(cycle: number, studentId: string): Promise<OwnSchedule[]> {
-    try {
-      const ownSchedules = await this.ownScheduleModel
-        .find({ cycle, student_id: studentId })
-        .populate({
-          path: 'courseSelections.schedules',
-          populate: {
-            path: 'blocks.teacher',
-            select: 'id name',
-          },
-        })
-        .exec();
-      if (!ownSchedules || ownSchedules.length === 0) {
-        throw new NotFoundException(
-          `No own schedules found for cycle ${cycle}`,
-        );
-      }
-      return ownSchedules;
-    } catch (error) {
-      throw new BadRequestException(
-        `Error fetching own schedules for cycle ${cycle}: ${error.message}`,
-      );
-    }
-  }
 }
