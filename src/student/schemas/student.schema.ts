@@ -21,8 +21,8 @@ export class Student {
   campus: Campus;
   @Prop({ type: { type: mongoose.Types.ObjectId, ref: 'Program' } })
   program: Program;
-  @Prop({ min: 1, max: 20, name: 'current_cycle' })
-  currentCycle: string;
+  @Prop({ type: Number, min: 1, max: 20, name: 'current_cycle' })
+  currentCycle: number;
 }
 
 export const StudentSchema = SchemaFactory.createForClass(Student);
