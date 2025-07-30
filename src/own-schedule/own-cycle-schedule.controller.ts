@@ -31,6 +31,9 @@ export class OwnScheduleController {
     @Query('cycle', ParseIntPipe) cycle: number,
     @Req() req: CustomRequest,
   ) {
-    return this.ownScheduleService.getByCycle(cycle, req.user._id);
+    return this.ownScheduleService.getBasicByUserIdAndCycle(
+      req.user._id,
+      cycle,
+    );
   }
 }

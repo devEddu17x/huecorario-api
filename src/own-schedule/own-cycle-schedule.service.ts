@@ -52,7 +52,7 @@ export class OwnScheduleService {
     }
   }
 
-  async getBasicDataByUserId(
+  async getBasicByUserIdAndCycle(
     studentId: string,
     cycle: number,
   ): Promise<ScheduleBasicData[]> {

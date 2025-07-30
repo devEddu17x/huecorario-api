@@ -112,7 +112,7 @@ export class AuthService {
       email,
     };
     const [basicScheduleData] = await Promise.all([
-      this.ownScheduleService.getBasicDataByUserId(
+      this.ownScheduleService.getBasicByUserIdAndCycle(
         student._id,
         student.currentCycle,
       ),
