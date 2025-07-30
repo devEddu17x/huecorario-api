@@ -10,21 +10,18 @@ export class ScheduleService {
   ) {}
 
   async findByCoursesIdGrouped(coursesId: string[]) {
-    // Convertir strings a ObjectIds si es necesario
     const objectIds = coursesId.map((id) => new mongoose.Types.ObjectId(id));
 
-    // Buscar todos los schedules de los cursos especificados
     const schedules = await this.scheduleModel
       .find({
         course: { $in: objectIds },
       })
       .populate({
         path: 'blocks.teacher',
-        select: 'id name', // opcional: seleccionar solo los campos que necesites
+        select: 'id name',
       })
       .exec();
 
-    // Agrupar schedules por course ID
     const groupedSchedules: Record<string, any[]> = {};
 
     schedules.forEach((schedule) => {
@@ -40,7 +37,6 @@ export class ScheduleService {
     return groupedSchedules;
   }
 
-  // Alternativa usando agregación de MongoDB (más eficiente)
   async findByCoursesIdGroupedWithAggregation(coursesId: string[]) {
     const objectIds = coursesId.map((id) => new mongoose.Types.ObjectId(id));
 

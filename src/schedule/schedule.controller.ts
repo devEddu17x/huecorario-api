@@ -8,7 +8,7 @@ export class ScheduleController {
 
   @Post()
   async getSchedulesForCourses(@Body() getSchedulesDTO: GetSchedulesDTO) {
-    return this.scheduleService.findByCoursesIdGrouped(
+    return this.scheduleService.findByCoursesIdGroupedWithAggregation(
       getSchedulesDTO.coursesId,
     );
   }
