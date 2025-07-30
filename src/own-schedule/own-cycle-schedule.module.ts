@@ -12,5 +12,6 @@ import { OwnSchedule, OwnScheduleSchema } from './schemas/own-schedule.schema';
   ],
   providers: [OwnScheduleService],
   controllers: [OwnScheduleController],
+  exports: [OwnScheduleService],
 })
 export class OwnScheduleModule {}

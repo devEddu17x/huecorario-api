@@ -29,6 +29,9 @@ export class OwnSchedule {
   })
   cycle: number;
 
+  @Prop()
+  previewImageUrl?: string;
+
   @Prop([CourseSelectionSchema])
   courseSelections: CourseSelection[];
 }

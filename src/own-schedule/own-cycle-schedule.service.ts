@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { OwnSchedule } from './schemas/own-schedule.schema';
 import { Model } from 'mongoose';
 import { CreateOwnScheduleDTO } from './dtos/create-own-schema.dto';
+import { ScheduleBasicData } from './interfaces/basic-data.interface';
 
 @Injectable()
 export class OwnScheduleService {
@@ -44,6 +45,25 @@ export class OwnScheduleService {
       throw new BadRequestException(
         `Error fetching own schedule with id ${id}: ${error.message}`,
       );
+    }
+  }
+
+  async getBasicDataByUserId(
+    studentId: string,
+    cycle: number,
+  ): Promise<ScheduleBasicData[]> {
+    try {
+      const basicData = await this.ownScheduleModel
+        .find({ student_id: studentId, cycle })
+        .select('_id name previewImageUrl updatedAt');
+      return basicData.map((schedule) => ({
+        _id: schedule._id.toString(),
+        name: schedule.name,
+        previewImageUrl: schedule.previewImageUrl || '',
+        updatedAt: (schedule as any).updatedAt,
+      }));
+    } catch (error) {
+      throw new BadRequestException(`Error fetching own schedules`);
     }
   }
 }
