@@ -20,6 +20,9 @@ import { Token } from '../enums/tokens-name.enum';
 import { Environment } from 'src/common/enums/environment.enum';
 import { parseTimeString } from 'src/common/utils/parseTimeString';
 import { CustomRequest } from '../interfaces/custom-request.interface';
+import { StudentLoginData } from 'src/student/interface/student-login-data.interface';
+import { OwnScheduleService } from 'src/own-schedule/own-cycle-schedule.service';
+import { LoginResponse } from '../interfaces/login-response.interface';
 
 @Injectable()
 export class AuthService {
@@ -30,6 +33,7 @@ export class AuthService {
     private readonly cacheService: CacheService,
     private readonly configService: ConfigService,
     private readonly tokenService: TokenService,
+    private readonly ownScheduleService: OwnScheduleService,
   ) {
     this.rounds = this.configService.get<number>('bcrypt.rounds');
     if (!this.rounds) {
@@ -93,13 +97,10 @@ export class AuthService {
     return await this.studentService.create(studentData);
   }
 
-  async login(
-    loginDTO: AuthLoginDTO,
-    res: Response,
-  ): Promise<{ student: StudentDocument; tokenExpiresIn: string }> {
+  async login(loginDTO: AuthLoginDTO, res: Response): Promise<LoginResponse> {
     const { email, password } = loginDTO;
 
-    const student: StudentDocument = await this.studentService.validateStudent(
+    const student: StudentLoginData = await this.studentService.validateStudent(
       email,
       password,
     );
@@ -108,10 +109,17 @@ export class AuthService {
     }
     const payload: Payload = {
       sub: student._id.toString(),
-      email: student.email,
+      email,
     };
-    await this.setTokensInCookies(payload, res);
+    const [basicScheduleData] = await Promise.all([
+      this.ownScheduleService.getBasicDataByUserId(
+        student._id,
+        student.currentCycle,
+      ),
+      this.setTokensInCookies(payload, res),
+    ]);
     return {
+      schedules: basicScheduleData,
       student,
       tokenExpiresIn: this.configService.get<string>('jwt.accessExpiresIn'),
     };
