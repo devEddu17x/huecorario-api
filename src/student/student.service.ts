@@ -28,6 +28,10 @@ export class StudentService {
       .select('password name _id currentCycle');
   }
 
+  async findById(id: string): Promise<Student | null> {
+    return await this.studentModel.findById(id);
+  }
+
   async validateStudent(
     email: string,
     password: string,

@@ -7,6 +7,6 @@ export class StudentController {
   constructor(private readonly studentService: StudentService) {}
   @Get('me')
   getProfile(@Req() req: CustomRequest) {
-    return this.studentService.findByEmail(req.user.email);
+    return this.studentService.findById(req.user._id);
   }
 }
