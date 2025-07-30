@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { OwnSchedule } from './schemas/own-schedule.schema';
 import { Model } from 'mongoose';
@@ -32,13 +36,13 @@ export class OwnScheduleService {
           path: 'courseSelections.schedules',
           populate: {
             path: 'blocks.teacher',
-            select: 'id name', // Selecciona los campos que necesites del teacher
+            select: 'id name',
           },
         })
         .exec();
 
       if (!ownSchedule) {
-        throw new BadRequestException(`Own schedule with id ${id} not found`);
+        throw new NotFoundException(`Own schedule with id ${id} not found`);
       }
       return ownSchedule;
     } catch (error) {
@@ -64,6 +68,31 @@ export class OwnScheduleService {
       }));
     } catch (error) {
       throw new BadRequestException(`Error fetching own schedules`);
+    }
+  }
+
+  async getByCycle(cycle: number, studentId: string): Promise<OwnSchedule[]> {
+    try {
+      const ownSchedules = await this.ownScheduleModel
+        .find({ cycle, student_id: studentId })
+        .populate({
+          path: 'courseSelections.schedules',
+          populate: {
+            path: 'blocks.teacher',
+            select: 'id name',
+          },
+        })
+        .exec();
+      if (!ownSchedules || ownSchedules.length === 0) {
+        throw new NotFoundException(
+          `No own schedules found for cycle ${cycle}`,
+        );
+      }
+      return ownSchedules;
+    } catch (error) {
+      throw new BadRequestException(
+        `Error fetching own schedules for cycle ${cycle}: ${error.message}`,
+      );
     }
   }
 }

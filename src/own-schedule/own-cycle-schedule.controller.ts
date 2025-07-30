@@ -1,6 +1,16 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { OwnScheduleService } from './own-cycle-schedule.service';
 import { CreateOwnScheduleDTO } from './dtos/create-own-schema.dto';
+import { CustomRequest } from 'src/auth/interfaces/custom-request.interface';
 
 @Controller('own-schedule')
 export class OwnScheduleController {
@@ -14,5 +24,13 @@ export class OwnScheduleController {
   @Get(':id')
   async getOwnSchedule(@Param('id') id: string) {
     return this.ownScheduleService.getById(id);
+  }
+
+  @Get()
+  async getOwnScheduleByCycle(
+    @Query('cycle', ParseIntPipe) cycle: number,
+    @Req() req: CustomRequest,
+  ) {
+    return this.ownScheduleService.getByCycle(cycle, req.user._id);
   }
 }
