@@ -14,12 +14,20 @@ export class ProgramService {
     @InjectModel(Program.name) private programModel: Model<Program>,
   ) {}
 
-  async allPrograms(): Promise<ProgramDocument[]> {
-    const programs = await this.programModel.find({}, { courses: 0 });
+  async allPrograms(): Promise<ProgramFound[]> {
+    const programs = await this.programModel
+      .find({}, { courses: 0 })
+      .select('_id name campus -__v');
+
     if (!programs || programs.length === 0) {
       throw new NotFoundException('No programs found');
     }
-    return programs;
+
+    return programs.map((program) => ({
+      _id: program._id.toString(),
+      name: program.name,
+      campus: program.campus,
+    }));
   }
 
   async findByCampus(campus: string): Promise<ProgramFound[]> {
@@ -27,7 +35,7 @@ export class ProgramService {
       .find({ campus })
       .select('_id name');
     if (!programs || programs.length === 0) {
-      throw new InternalServerErrorException('Error retrieving programs');
+      throw new NotFoundException(`No programs found for campus ${campus}`);
     }
     return programs.map((program) => {
       return {

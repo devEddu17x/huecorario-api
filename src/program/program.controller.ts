@@ -15,4 +15,10 @@ export class ProgramController {
   ): Promise<ProgramFound[]> {
     return this.programService.findByCampus(campus);
   }
+
+  @NoAccesTokenNeeded()
+  @Get()
+  async getAllProgram(): Promise<ProgramFound[]> {
+    return this.programService.allPrograms();
+  }
 }
