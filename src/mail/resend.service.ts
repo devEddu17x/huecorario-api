@@ -11,6 +11,9 @@ export class ResendService {
     if (!apiKey) {
       throw new Error('Missing API_KEY for Resend Service');
     }
+    if (!this.from) {
+      throw new Error('Missing FROM email for Resend Service');
+    }
     this.resendService = new Resend(apiKey);
   }
 
