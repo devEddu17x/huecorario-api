@@ -3,4 +3,5 @@ export interface StudentLoginData {
   name: string;
   password: string;
   currentCycle: number;
+  program: string;
 }

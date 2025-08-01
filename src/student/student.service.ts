@@ -25,7 +25,7 @@ export class StudentService {
   async findByEmail(email: string): Promise<StudentLoginData | null> {
     return await this.studentModel
       .findOne({ email })
-      .select('password name _id currentCycle');
+      .select('password name _id currentCycle program');
   }
 
   async findById(id: string): Promise<Student | null> {
