@@ -43,22 +43,19 @@ export class CreateStudentDTO {
   })
   phone?: string;
 
-  @IsOptional()
   @IsEnum(Campus, {
     message: `Campus must be one of ${Object.values(Campus).join(', ')}`,
   })
-  campus?: Campus;
+  campus: Campus;
 
-  @IsOptional()
   @IsMongoId()
-  program?: string;
+  program: string;
 
-  @IsOptional()
   @Min(1, {
     message: 'Current cycle must be at least 1',
   })
   @Max(20, {
     message: 'Current cycle must be at most 20',
   })
-  currentCycle?: number;
+  currentCycle: number;
 }

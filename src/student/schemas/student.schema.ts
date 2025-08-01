@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument, Types } from 'mongoose';
 import { Campus } from 'src/common/enums/campus.enum';
 import { Program } from 'src/program/schemas/program.schema';
 
@@ -19,8 +19,12 @@ export class Student {
   phone: string;
   @Prop({ enum: Campus })
   campus: Campus;
-  @Prop({ type: { type: mongoose.Types.ObjectId, ref: 'Program' } })
-  program: Program;
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Program',
+    required: true,
+  })
+  program: Types.ObjectId;
   @Prop({ type: Number, min: 1, max: 20, name: 'current_cycle' })
   currentCycle: number;
 }
