@@ -12,7 +12,7 @@ export class StudentService {
     @InjectModel(Student.name) private studentModel: Model<Student>,
   ) {}
 
-  async create(createStudentDTO: CreateStudentDTO): Promise<Student> {
+  async create(createStudentDTO: CreateStudentDTO): Promise<StudentDocument> {
     const createdStudent = new this.studentModel(createStudentDTO);
     return createdStudent.save();
   }
