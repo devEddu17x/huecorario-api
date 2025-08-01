@@ -27,6 +27,7 @@ import { LoginResponse } from '../interfaces/login-response.interface';
 @Injectable()
 export class AuthService {
   private readonly rounds: number;
+  private readonly expiresIn: string;
   constructor(
     private readonly studentService: StudentService,
     private readonly mailService: ResendService,
@@ -39,6 +40,7 @@ export class AuthService {
     if (!this.rounds) {
       throw new Error('Bcrypt rounds not configured');
     }
+    this.expiresIn = this.configService.get<string>('jwt.accessExpiresIn');
   }
   async register(
     createStudentDTO: CreateStudentDTO,
@@ -93,7 +95,6 @@ export class AuthService {
     }
 
     studentData.password = await bcrypt.hash(studentData.password, this.rounds);
-
     return await this.studentService.create(studentData);
   }
 
@@ -121,7 +122,7 @@ export class AuthService {
     return {
       schedules: basicScheduleData,
       student,
-      tokenExpiresIn: this.configService.get<string>('jwt.accessExpiresIn'),
+      tokenExpiresIn: this.expiresIn,
     };
   }
 
