@@ -18,6 +18,7 @@ import { Request, Response } from 'express';
 import { NoAccesTokenNeeded } from 'src/common/decorators/is-public.decorator';
 import { CustomRequest } from './interfaces/custom-request.interface';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+import { RegisterResponse } from './interfaces/register-response.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -35,9 +36,12 @@ export class AuthController {
   }
   @NoAccesTokenNeeded()
   @Post('verify-email')
-  async verifyEmail(@Body() verifyEmailDTO: VerifyEmailDTO): Promise<Student> {
+  async verifyEmail(
+    @Body() verifyEmailDTO: VerifyEmailDTO,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<RegisterResponse> {
     try {
-      return await this.authService.verifyEmail(verifyEmailDTO);
+      return await this.authService.verifyEmail(verifyEmailDTO, res);
     } catch (error) {
       throw new BadRequestException('Invalid verification code or email.');
     }

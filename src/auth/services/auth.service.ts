@@ -23,6 +23,7 @@ import { CustomRequest } from '../interfaces/custom-request.interface';
 import { StudentLoginData } from 'src/student/interface/student-login-data.interface';
 import { OwnScheduleService } from 'src/own-schedule/own-cycle-schedule.service';
 import { LoginResponse } from '../interfaces/login-response.interface';
+import { RegisterResponse } from '../interfaces/register-response.interface';
 
 @Injectable()
 export class AuthService {
@@ -74,7 +75,10 @@ export class AuthService {
     return response;
   }
 
-  async verifyEmail(verifyEmailDTO: VerifyEmailDTO): Promise<Student> {
+  async verifyEmail(
+    verifyEmailDTO: VerifyEmailDTO,
+    res: Response,
+  ): Promise<RegisterResponse> {
     const { email, verificationCode } = verifyEmailDTO;
     const codeKey = `code:${email}`;
     const cachedCode = await this.cacheService.getData<number>(codeKey);
@@ -95,7 +99,13 @@ export class AuthService {
     }
 
     studentData.password = await bcrypt.hash(studentData.password, this.rounds);
-    return await this.studentService.create(studentData);
+    const createdStudent = await this.studentService.create(studentData);
+    const payload: Payload = {
+      sub: createdStudent._id.toString(),
+      email: createdStudent.email,
+    };
+    await this.setTokensInCookies(payload, res);
+    return { student: createdStudent, tokenExpiresIn: this.expiresIn };
   }
 
   async login(loginDTO: AuthLoginDTO, res: Response): Promise<LoginResponse> {
@@ -168,7 +178,7 @@ export class AuthService {
       maxAge: parseTimeString(
         this.configService.get<string>('jwt.accessExpiresIn'),
       ),
-      path: '/api',
+      path: '/',
     });
 
     res.cookie(Token.REFRESH_TOKEN, refreshToken, {
@@ -178,7 +188,7 @@ export class AuthService {
       maxAge: parseTimeString(
         this.configService.get<string>('jwt.refreshExpiresIn'),
       ),
-      path: '/api/auth/refresh',
+      path: '/',
     });
   }
 }

@@ -6,6 +6,7 @@ export interface LoginResponse {
     _id: string;
     name: string;
     currentCycle: number;
+    program: string;
   };
   tokenExpiresIn: string;
 }
