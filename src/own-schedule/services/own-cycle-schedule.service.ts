@@ -10,14 +10,22 @@ import { CreateOwnScheduleDTO } from '../dtos/create-own-schema.dto';
 import { ScheduleBasicData } from '../interfaces/basic-data.interface';
 import { SvgGeneratorService } from './svg-generator.service';
 import { StorageService } from 'src/storage/storage.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class OwnScheduleService {
+  url: string;
   constructor(
     @InjectModel(OwnSchedule.name) private ownScheduleModel: Model<OwnSchedule>,
     private readonly svgGeneratorService: SvgGeneratorService,
     private readonly storageService: StorageService,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    this.url = this.configService.get<string>('cloudflare.url');
+    if (!this.url) {
+      throw new Error('Cloudflare URL is not defined in the configuration');
+    }
+  }
 
   async create(createDTO: CreateOwnScheduleDTO): Promise<any> {
     try {
@@ -25,8 +33,9 @@ export class OwnScheduleService {
       const svg: string = this.svgGeneratorService.generateScheduleSVG(
         createDTO.renderData,
       );
+      ownSchedule.previewImageUrl = `${this.url}schedules/${ownSchedule._id}.svg`;
 
-      const [storageResponse, insertedResponse] = await Promise.all([
+      const [_, insertedResponse] = await Promise.all([
         this.storageService.uploadFile<string>(
           `schedules/${ownSchedule._id}.svg`,
           svg,
@@ -34,7 +43,6 @@ export class OwnScheduleService {
         this.ownScheduleModel.insertOne(ownSchedule),
       ]);
 
-      // TODO: save img to mongo
       if (!insertedResponse._id) {
         throw new BadRequestException(`Failed to create own schedule`);
       }
