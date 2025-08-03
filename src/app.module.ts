@@ -13,6 +13,7 @@ import { CourseModule } from './course/course.module';
 import { TeacherModule } from './teacher/teacher.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { OwnScheduleModule } from './own-schedule/own-cycle-schedule.module';
+import { StorageModule } from './storage/storage.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,6 +27,7 @@ import { OwnScheduleModule } from './own-schedule/own-cycle-schedule.module';
         config.bcryptConfig,
         config.jwtConfig,
         config.appConfig,
+        config.cloudflareConfig,
       ],
     }),
     MongooseModule.forRootAsync({
@@ -45,6 +47,7 @@ import { OwnScheduleModule } from './own-schedule/own-cycle-schedule.module';
     ScheduleModule,
     TeacherModule,
     OwnScheduleModule,
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

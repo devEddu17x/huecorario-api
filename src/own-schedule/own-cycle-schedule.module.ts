@@ -4,9 +4,11 @@ import { OwnScheduleController } from './own-cycle-schedule.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { OwnSchedule, OwnScheduleSchema } from './schemas/own-schedule.schema';
 import { SvgGeneratorService } from './services/svg-generator.service';
+import { StorageModule } from 'src/storage/storage.module';
 
 @Module({
   imports: [
+    StorageModule,
     MongooseModule.forFeature([
       { name: OwnSchedule.name, schema: OwnScheduleSchema },
     ]),
