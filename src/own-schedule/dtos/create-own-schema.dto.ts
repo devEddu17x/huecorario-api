@@ -16,9 +16,6 @@ import { CreateCourseSelectionDTO } from './create-course-selection.dto';
 import { CourseDataRenderDTO } from './render-data.dto';
 
 export class CreateOwnScheduleDTO {
-  @IsMongoId()
-  student_id: string;
-
   @IsString()
   @MinLength(1)
   @MaxLength(100)

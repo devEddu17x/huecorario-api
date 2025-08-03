@@ -17,8 +17,11 @@ export class OwnScheduleController {
   constructor(private readonly ownScheduleService: OwnScheduleService) {}
 
   @Post()
-  async createOwnSchedule(@Body() createDTO: CreateOwnScheduleDTO) {
-    return this.ownScheduleService.create(createDTO);
+  async createOwnSchedule(
+    @Body() createDTO: CreateOwnScheduleDTO,
+    @Req() req: CustomRequest,
+  ) {
+    return this.ownScheduleService.create(createDTO, req.user._id);
   }
 
   @Get(':id')

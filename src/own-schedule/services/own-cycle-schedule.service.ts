@@ -27,9 +27,15 @@ export class OwnScheduleService {
     }
   }
 
-  async create(createDTO: CreateOwnScheduleDTO): Promise<any> {
+  async create(
+    createDTO: CreateOwnScheduleDTO,
+    studentId: string,
+  ): Promise<any> {
     try {
-      const ownSchedule = new this.ownScheduleModel(createDTO);
+      const ownSchedule = new this.ownScheduleModel({
+        ...createDTO,
+        student_id: studentId,
+      });
       const svg: string = this.svgGeneratorService.generateScheduleSVG(
         createDTO.renderData,
       );
