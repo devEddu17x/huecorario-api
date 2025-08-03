@@ -1,0 +1,8 @@
+export enum DAYS {
+  LUNES = 'LUNES',
+  MARTES = 'MARTES',
+  MIÉRCOLES = 'MIÉRCOLES',
+  JUEVES = 'JUEVES',
+  VIERNES = 'VIERNES',
+  SÁBADO = 'SÁBADO',
+}

@@ -10,8 +10,10 @@ import {
   ValidateNested,
   ArrayMinSize,
   ArrayMaxSize,
+  IsArray,
 } from 'class-validator';
 import { CreateCourseSelectionDTO } from './create-course-selection.dto';
+import { CourseDataRenderDTO } from './render-data.dto';
 
 export class CreateOwnScheduleDTO {
   @IsMongoId()
@@ -32,4 +34,10 @@ export class CreateOwnScheduleDTO {
   @ArrayMinSize(1)
   @ArrayMaxSize(10)
   courseSelections: CreateCourseSelectionDTO[];
+
+  @ValidateNested({ each: true })
+  @Type(() => CourseDataRenderDTO)
+  @ArrayMinSize(1)
+  @ArrayMaxSize(30)
+  renderData: CourseDataRenderDTO[];
 }

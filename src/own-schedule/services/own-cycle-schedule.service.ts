@@ -8,17 +8,22 @@ import { OwnSchedule } from '../schemas/own-schedule.schema';
 import { Model } from 'mongoose';
 import { CreateOwnScheduleDTO } from '../dtos/create-own-schema.dto';
 import { ScheduleBasicData } from '../interfaces/basic-data.interface';
+import { SvgGeneratorService } from './svg-generator.service';
 
 @Injectable()
 export class OwnScheduleService {
   constructor(
     @InjectModel(OwnSchedule.name) private ownScheduleModel: Model<OwnSchedule>,
+    private readonly svgGeneratorService: SvgGeneratorService,
   ) {}
 
   async create(createDTO: CreateOwnScheduleDTO): Promise<any> {
     try {
       const ownSchedule = new this.ownScheduleModel(createDTO);
       const result = await this.ownScheduleModel.insertOne(ownSchedule);
+      const svg = this.svgGeneratorService.generateScheduleSVG(
+        createDTO.renderData,
+      );
       if (!result._id) {
         throw new BadRequestException(`Failed to create own schedule`);
       }
