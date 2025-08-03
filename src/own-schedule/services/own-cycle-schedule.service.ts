@@ -34,7 +34,6 @@ export class OwnScheduleService {
         this.ownScheduleModel.insertOne(ownSchedule),
       ]);
 
-      console.log('storage response', storageResponse);
       // TODO: save img to mongo
       if (!insertedResponse._id) {
         throw new BadRequestException(`Failed to create own schedule`);
