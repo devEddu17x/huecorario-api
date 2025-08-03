@@ -181,10 +181,6 @@ ${this.createTimeLabelsAndGrid()}
 ${this.createCourseBlocks(renderData)}
 </svg>`;
 
-    // Save the SVG file
-    fs.writeFileSync(outputPath, svgContent, 'utf8');
-
-    console.log(`Horario SVG generado exitosamente en: ${outputPath}`);
     return svgContent;
   }
 }
