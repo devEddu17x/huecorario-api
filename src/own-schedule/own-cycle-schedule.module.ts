@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { OwnScheduleService } from './own-cycle-schedule.service';
+import { OwnScheduleService } from './services/own-cycle-schedule.service';
 import { OwnScheduleController } from './own-cycle-schedule.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { OwnSchedule, OwnScheduleSchema } from './schemas/own-schedule.schema';
+import { SvgGeneratorService } from './svg-generator.service';
 
 @Module({
   imports: [
@@ -10,7 +11,7 @@ import { OwnSchedule, OwnScheduleSchema } from './schemas/own-schedule.schema';
       { name: OwnSchedule.name, schema: OwnScheduleSchema },
     ]),
   ],
-  providers: [OwnScheduleService],
+  providers: [OwnScheduleService, SvgGeneratorService],
   controllers: [OwnScheduleController],
   exports: [OwnScheduleService],
 })

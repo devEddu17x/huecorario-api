@@ -4,10 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { OwnSchedule } from './schemas/own-schedule.schema';
+import { OwnSchedule } from '../schemas/own-schedule.schema';
 import { Model } from 'mongoose';
-import { CreateOwnScheduleDTO } from './dtos/create-own-schema.dto';
-import { ScheduleBasicData } from './interfaces/basic-data.interface';
+import { CreateOwnScheduleDTO } from '../dtos/create-own-schema.dto';
+import { ScheduleBasicData } from '../interfaces/basic-data.interface';
 
 @Injectable()
 export class OwnScheduleService {

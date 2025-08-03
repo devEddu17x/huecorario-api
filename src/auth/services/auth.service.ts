@@ -21,7 +21,7 @@ import { Environment } from 'src/common/enums/environment.enum';
 import { parseTimeString } from 'src/common/utils/parseTimeString';
 import { CustomRequest } from '../interfaces/custom-request.interface';
 import { StudentLoginData } from 'src/student/interface/student-login-data.interface';
-import { OwnScheduleService } from 'src/own-schedule/own-cycle-schedule.service';
+import { OwnScheduleService } from 'src/own-schedule/services/own-cycle-schedule.service';
 import { LoginResponse } from '../interfaces/login-response.interface';
 import { RegisterResponse } from '../interfaces/register-response.interface';
 

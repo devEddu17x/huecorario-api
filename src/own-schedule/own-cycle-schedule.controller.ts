@@ -8,7 +8,7 @@ import {
   Query,
   Req,
 } from '@nestjs/common';
-import { OwnScheduleService } from './own-cycle-schedule.service';
+import { OwnScheduleService } from './services/own-cycle-schedule.service';
 import { CreateOwnScheduleDTO } from './dtos/create-own-schema.dto';
 import { CustomRequest } from 'src/auth/interfaces/custom-request.interface';
 
