@@ -14,6 +14,7 @@ import { TeacherModule } from './teacher/teacher.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { OwnScheduleModule } from './own-schedule/own-cycle-schedule.module';
 import { StorageModule } from './storage/storage.module';
+import { SignatureModule } from './signature/signature.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,6 +29,7 @@ import { StorageModule } from './storage/storage.module';
         config.jwtConfig,
         config.appConfig,
         config.cloudflareConfig,
+        config.signatureConfig,
       ],
     }),
     MongooseModule.forRootAsync({
@@ -48,6 +50,7 @@ import { StorageModule } from './storage/storage.module';
     TeacherModule,
     OwnScheduleModule,
     StorageModule,
+    SignatureModule,
   ],
   controllers: [AppController],
   providers: [AppService],

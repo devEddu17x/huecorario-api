@@ -7,3 +7,4 @@ export { default as bcryptConfig } from './bcrypt.config';
 export { default as jwtConfig } from './jwt.config';
 export { default as appConfig } from './app.config';
 export { default as cloudflareConfig } from './cloudflare.config';
+export { default as signatureConfig } from './signature.config';
