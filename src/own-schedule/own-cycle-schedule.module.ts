@@ -6,11 +6,13 @@ import { OwnSchedule, OwnScheduleSchema } from './schemas/own-schedule.schema';
 import { SvgGeneratorService } from './services/svg-generator.service';
 import { StorageModule } from 'src/storage/storage.module';
 import { ConfigModule } from '@nestjs/config';
+import { SignatureModule } from 'src/signature/signature.module';
 
 @Module({
   imports: [
     ConfigModule,
     StorageModule,
+    SignatureModule,
     MongooseModule.forFeature([
       { name: OwnSchedule.name, schema: OwnScheduleSchema },
     ]),

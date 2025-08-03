@@ -11,6 +11,7 @@ import { ScheduleBasicData } from '../interfaces/basic-data.interface';
 import { SvgGeneratorService } from './svg-generator.service';
 import { StorageService } from 'src/storage/storage.service';
 import { ConfigService } from '@nestjs/config';
+import { SignatureService } from 'src/signature/signature.service';
 
 @Injectable()
 export class OwnScheduleService {
@@ -19,6 +20,7 @@ export class OwnScheduleService {
     @InjectModel(OwnSchedule.name) private ownScheduleModel: Model<OwnSchedule>,
     private readonly svgGeneratorService: SvgGeneratorService,
     private readonly storageService: StorageService,
+    private readonly signatureService: SignatureService,
     private readonly configService: ConfigService,
   ) {
     this.url = this.configService.get<string>('cloudflare.url');
@@ -89,11 +91,15 @@ export class OwnScheduleService {
     try {
       const basicData = await this.ownScheduleModel
         .find({ student_id: studentId, cycle })
-        .select('_id name previewImageUrl updatedAt');
+        .select('_id name previewImageUrl updatedAt')
+        .lean();
       return basicData.map((schedule) => ({
         _id: schedule._id.toString(),
         name: schedule.name,
-        previewImageUrl: schedule.previewImageUrl || '',
+        previewImageUrl: this.signatureService.generateSignedURL(
+          schedule.previewImageUrl,
+          3600,
+        ),
         updatedAt: (schedule as any).updatedAt,
       }));
     } catch (error) {
