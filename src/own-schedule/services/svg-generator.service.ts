@@ -204,10 +204,7 @@ export class SvgGeneratorService {
   }
 
   // Main private to generate schedule
-  generateScheduleSVG(
-    renderData: CourseData[],
-    outputPath: string = './horario.svg',
-  ): string {
+  generateScheduleSVG(renderData: CourseData[]): string {
     const svgContent = `${this.createSVGHeader(renderData)}
 ${this.createTimeHeader()}
 ${this.createDayHeaders()}
@@ -215,10 +212,6 @@ ${this.createTimeLabelsAndGrid(renderData)}
 ${this.createCourseBlocks(renderData)}
 </svg>`;
 
-    // Save the SVG file
-    fs.writeFileSync(outputPath, svgContent, 'utf8');
-
-    console.log(`Horario SVG generado exitosamente en: ${outputPath}`);
     return svgContent;
   }
 }
