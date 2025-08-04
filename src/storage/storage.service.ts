@@ -36,6 +36,7 @@ export class StorageService {
       Key: key,
       Body: value,
       ContentType: 'image/svg+xml',
+      CacheControl: 'max-age=0, must-revalidate',
     });
     const response = await this.s3Client.send(putCommand);
     if (

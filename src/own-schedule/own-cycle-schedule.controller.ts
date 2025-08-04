@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   Req,
@@ -11,6 +12,7 @@ import {
 import { OwnScheduleService } from './services/own-cycle-schedule.service';
 import { CreateOwnScheduleDTO } from './dtos/create-own-schema.dto';
 import { CustomRequest } from 'src/auth/interfaces/custom-request.interface';
+import { UpdateOwnScheduleDTO } from './dtos/update-own-schedule.dto';
 
 @Controller('own-schedule')
 export class OwnScheduleController {
@@ -22,6 +24,15 @@ export class OwnScheduleController {
     @Req() req: CustomRequest,
   ) {
     return this.ownScheduleService.create(createDTO, req.user._id);
+  }
+
+  @Patch(':id')
+  async updateOwnSchedule(
+    @Param('id') id: string,
+    @Body() updateDTO: UpdateOwnScheduleDTO,
+    @Req() req: CustomRequest,
+  ) {
+    return this.ownScheduleService.update(id, req.user._id, updateDTO);
   }
 
   @Get(':id')

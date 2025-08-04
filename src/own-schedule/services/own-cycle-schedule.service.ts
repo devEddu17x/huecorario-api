@@ -12,6 +12,7 @@ import { SvgGeneratorService } from './svg-generator.service';
 import { StorageService } from 'src/storage/storage.service';
 import { ConfigService } from '@nestjs/config';
 import { SignatureService } from 'src/signature/signature.service';
+import { UpdateOwnScheduleDTO } from '../dtos/update-own-schedule.dto';
 
 @Injectable()
 export class OwnScheduleService {
@@ -58,6 +59,38 @@ export class OwnScheduleService {
     } catch (error) {
       throw new BadRequestException(`Error creating own schedule`);
     }
+  }
+
+  async update(
+    id: string,
+    studentId: string,
+    updateDTO: UpdateOwnScheduleDTO,
+  ): Promise<OwnSchedule | null> {
+    const ownSchedule = await this.ownScheduleModel.findById(id);
+    if (!ownSchedule) {
+      throw new NotFoundException(`Own schedule with id ${id} not found`);
+    }
+
+    if (ownSchedule.student_id.toString() !== studentId) {
+      throw new BadRequestException(
+        `You do not have permission to update this schedule`,
+      );
+    }
+
+    Object.assign(ownSchedule, updateDTO);
+    const svg: string = this.svgGeneratorService.generateScheduleSVG(
+      updateDTO.renderData,
+    );
+    ownSchedule.isNew = false;
+    await Promise.all([
+      ownSchedule.save(),
+      this.storageService.uploadFile<string>(
+        `schedules/${ownSchedule._id}.svg`,
+        svg,
+      ),
+    ]);
+
+    return ownSchedule;
   }
 
   async getById(id: string): Promise<OwnSchedule | null> {
