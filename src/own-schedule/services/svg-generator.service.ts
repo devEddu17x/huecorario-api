@@ -17,9 +17,9 @@ export class SvgGeneratorService {
     this.headerHeight = 40;
 
     this.width = this.labelMargin + this.dayWidth * DAYS.length;
-    this.height = this.headerHeight + this.slotHeight * TIME_SLOTS.length;
   }
 
+  // Helper privates
   private findSlotIndex(timeStr: string): number | null {
     for (let i = 0; i < TIME_SLOTS.length; i++) {
       const [start, end] = TIME_SLOTS[i].split('-');
@@ -71,10 +71,15 @@ export class SvgGeneratorService {
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
   }
+
   // SVG generation privates
-  private createSVGHeader(): string {
+  private createSVGHeader(renderData: CourseData[]): string {
+    const usedTimeSlots = this.getUsedTimeSlots(renderData);
+    const actualHeight =
+      this.headerHeight + this.slotHeight * usedTimeSlots.length;
+
     return `<?xml version="1.0" encoding="UTF-8"?>
-<svg width="${this.width}" height="${this.height}" xmlns="http://www.w3.org/2000/svg">
+<svg width="${this.width}" height="${actualHeight}" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <style>
       .header-bg { fill: #e2e8f0; stroke: #cbd5e1; stroke-width: 1; }
@@ -107,17 +112,19 @@ export class SvgGeneratorService {
     return svg;
   }
 
-  private createTimeLabelsAndGrid(): string {
+  private createTimeLabelsAndGrid(renderData: CourseData[]): string {
+    const usedTimeSlots = this.getUsedTimeSlots(renderData);
     let svg = '';
 
-    for (let i = 0; i < TIME_SLOTS.length; i++) {
+    for (let i = 0; i < usedTimeSlots.length; i++) {
+      const slotIndex = usedTimeSlots[i];
       const y = this.headerHeight + i * this.slotHeight;
 
       // Time label background
       svg += `
-  <!-- Time slot: ${TIME_SLOTS[i]} -->
+  <!-- Time slot: ${TIME_SLOTS[slotIndex]} -->
   <rect x="0" y="${y}" width="${this.labelMargin}" height="${this.slotHeight}" class="time-bg"/>
-  <text x="10" y="${y + 35}" class="time-text">${TIME_SLOTS[i]}</text>`;
+  <text x="10" y="${y + 35}" class="time-text">${TIME_SLOTS[slotIndex]}</text>`;
 
       // Grid cells
       for (let j = 0; j < DAYS.length; j++) {
@@ -131,6 +138,7 @@ export class SvgGeneratorService {
   }
 
   private createCourseBlocks(renderData: CourseData[]): string {
+    const usedTimeSlots = this.getUsedTimeSlots(renderData);
     let svg = '';
 
     for (const course of renderData) {
@@ -142,8 +150,16 @@ export class SvgGeneratorService {
         continue;
       }
 
-      const top = this.headerHeight + startIndex * this.slotHeight;
-      const bottom = this.headerHeight + (endIndex + 1) * this.slotHeight;
+      // Find the positions in the filtered array
+      const startPosition = usedTimeSlots.indexOf(startIndex);
+      const endPosition = usedTimeSlots.indexOf(endIndex);
+
+      if (startPosition === -1 || endPosition === -1) {
+        continue;
+      }
+
+      const top = this.headerHeight + startPosition * this.slotHeight;
+      const bottom = this.headerHeight + (endPosition + 1) * this.slotHeight;
       const left = this.labelMargin + dayIndex * this.dayWidth;
       const blockHeight = bottom - top;
 
@@ -169,18 +185,40 @@ export class SvgGeneratorService {
     return svg;
   }
 
+  // private to get used time slots
+  private getUsedTimeSlots(renderData: CourseData[]): number[] {
+    const usedSlots = new Set<number>();
+
+    for (const course of renderData) {
+      const startIndex = this.findSlotIndex(course.start);
+      const endIndex = this.findSlotEndIndex(course.end);
+
+      if (startIndex !== null && endIndex !== null) {
+        for (let i = startIndex; i <= endIndex; i++) {
+          usedSlots.add(i);
+        }
+      }
+    }
+
+    return Array.from(usedSlots).sort((a, b) => a - b);
+  }
+
   // Main private to generate schedule
   generateScheduleSVG(
     renderData: CourseData[],
     outputPath: string = './horario.svg',
   ): string {
-    const svgContent = `${this.createSVGHeader()}
+    const svgContent = `${this.createSVGHeader(renderData)}
 ${this.createTimeHeader()}
 ${this.createDayHeaders()}
-${this.createTimeLabelsAndGrid()}
+${this.createTimeLabelsAndGrid(renderData)}
 ${this.createCourseBlocks(renderData)}
 </svg>`;
 
+    // Save the SVG file
+    fs.writeFileSync(outputPath, svgContent, 'utf8');
+
+    console.log(`Horario SVG generado exitosamente en: ${outputPath}`);
     return svgContent;
   }
 }
