@@ -18,7 +18,6 @@ export class SignatureService {
       .createHmac('sha256', this.secret)
       .update(`${url.pathname}|${timestamp}`)
       .digest('hex');
-    console.log('pathname', url.pathname);
 
     return `${baseURL}?expires=${timestamp}&signature=${signature}`;
   }
