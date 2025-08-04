@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 @Injectable()
 export class SignatureService {
-  secret: string;
+  private secret: string;
   constructor(private readonly configService: ConfigService) {
     this.secret = this.configService.get<string>('signature.secret');
     if (!this.secret) {
