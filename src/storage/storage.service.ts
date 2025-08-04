@@ -35,8 +35,8 @@ export class StorageService {
       Bucket: this.bucketName,
       Key: key,
       Body: value,
+      ContentType: 'image/svg+xml',
     });
-
     const response = await this.s3Client.send(putCommand);
     if (
       !response.$metadata.httpStatusCode ||
