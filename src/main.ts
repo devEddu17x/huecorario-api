@@ -20,7 +20,7 @@ async function bootstrap() {
   console.log(
     `CORS enabled for origins: ${configService.get<string[]>('api.origin')}`,
   );
-  await app.listen(configService.get<number>('api.port'));
+  await app.listen(configService.get<number>('api.port'), '0.0.0.0');
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
