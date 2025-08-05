@@ -157,10 +157,10 @@ export class AuthService {
 
   async logout(res: Response) {
     res.clearCookie(Token.ACCESS_TOKEN, {
-      path: '/api',
+      path: '/',
     });
     res.clearCookie(Token.REFRESH_TOKEN, {
-      path: '/api/auth/refresh',
+      path: '/',
     });
     return { message: 'Logged out successfully' };
   }

@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Schedule } from './schemas/schedule.schema';
 import mongoose, { Model } from 'mongoose';
+import { CourseSchedules } from './intefaces/course-schedules';
 
 @Injectable()
 export class ScheduleService {
@@ -37,7 +38,9 @@ export class ScheduleService {
     return groupedSchedules;
   }
 
-  async findByCoursesIdGroupedWithAggregation(coursesId: string[]) {
+  async findByCoursesIdGroupedWithAggregation(
+    coursesId: string[],
+  ): Promise<CourseSchedules[]> {
     const objectIds = coursesId.map((id) => new mongoose.Types.ObjectId(id));
 
     const result = await this.scheduleModel.aggregate([
@@ -86,19 +89,51 @@ export class ScheduleService {
         $unset: 'teacherDetails',
       },
       {
+        $lookup: {
+          from: 'courses',
+          localField: 'course',
+          foreignField: '_id',
+          as: 'courseDetails',
+        },
+      },
+      {
         $group: {
           _id: '$course',
           schedules: { $push: '$$ROOT' },
+          courseInfo: { $first: { $arrayElemAt: ['$courseDetails', 0] } },
+        },
+      },
+      {
+        $project: {
+          _id: 0, // Eliminar _id del grupo
+          courseName: '$courseInfo.name',
+          schedules: {
+            $map: {
+              input: '$schedules',
+              as: 'schedule',
+              in: {
+                _id: { $toString: '$$schedule._id' },
+                nrc: '$$schedule.nrc',
+                section: '$$schedule.section',
+                idLeague: '$$schedule.idLeague',
+                league: '$$schedule.league',
+                credits: '$$schedule.credits',
+                h: '$$schedule.h',
+                ht: '$$schedule.ht',
+                pp: '$$schedule.pp',
+                capacity: '$$schedule.capacity',
+                course: { $toString: '$$schedule.course' },
+                blocks: '$$schedule.blocks',
+                __v: '$$schedule.__v',
+                createdAt: '$$schedule.createdAt',
+                updatedAt: '$$schedule.updatedAt',
+              },
+            },
+          },
         },
       },
     ]);
 
-    // Convertir el resultado a un objeto con keys como strings
-    const groupedSchedules: Record<string, any[]> = {};
-    result.forEach((group) => {
-      groupedSchedules[group._id.toString()] = group.schedules;
-    });
-
-    return groupedSchedules;
+    return result;
   }
 }

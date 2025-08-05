@@ -13,6 +13,8 @@ import { StorageService } from 'src/storage/storage.service';
 import { ConfigService } from '@nestjs/config';
 import { SignatureService } from 'src/signature/signature.service';
 import { UpdateOwnScheduleDTO } from '../dtos/update-own-schedule.dto';
+import { ScheduleService } from 'src/schedule/schedule.service';
+import { CourseSchedules } from 'src/schedule/intefaces/course-schedules';
 
 @Injectable()
 export class OwnScheduleService {
@@ -23,6 +25,7 @@ export class OwnScheduleService {
     private readonly storageService: StorageService,
     private readonly signatureService: SignatureService,
     private readonly configService: ConfigService,
+    private readonly scheduleService: ScheduleService,
   ) {
     this.url = this.configService.get<string>('cloudflare.url');
     if (!this.url) {
@@ -93,7 +96,9 @@ export class OwnScheduleService {
     return ownSchedule;
   }
 
-  async getById(id: string): Promise<OwnSchedule | null> {
+  async getById(
+    id: string,
+  ): Promise<{ ownSchedule: OwnSchedule; allSchedules: CourseSchedules[] }> {
     try {
       const ownSchedule = await this.ownScheduleModel
         .findById(id)
@@ -109,10 +114,22 @@ export class OwnScheduleService {
       if (!ownSchedule) {
         throw new NotFoundException(`Own schedule with id ${id} not found`);
       }
-      return ownSchedule;
+
+      const courses: string[] = ownSchedule.courseSelections.map(
+        (selection) => {
+          return selection.course.toString();
+        },
+      );
+
+      const allSchedules: CourseSchedules[] =
+        await this.scheduleService.findByCoursesIdGroupedWithAggregation(
+          courses,
+        );
+
+      return { ownSchedule, allSchedules };
     } catch (error) {
       throw new BadRequestException(
-        `Error fetching own schedule with id ${id}: ${error.message}`,
+        `Error fetching own schedule with id ${id}`,
       );
     }
   }
