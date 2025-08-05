@@ -10,15 +10,14 @@ export class ProgramController {
 
   @NoAccesTokenNeeded()
   @Get()
+  async getAllProgram(): Promise<ProgramFound[]> {
+    return this.programService.allPrograms();
+  }
+  @NoAccesTokenNeeded()
+  @Get()
   async getByCampus(
     @Query('campus', new ParseEnumPipe(Campus)) campus: Campus,
   ): Promise<ProgramFound[]> {
     return this.programService.findByCampus(campus);
-  }
-
-  @NoAccesTokenNeeded()
-  @Get()
-  async getAllProgram(): Promise<ProgramFound[]> {
-    return this.programService.allPrograms();
   }
 }
