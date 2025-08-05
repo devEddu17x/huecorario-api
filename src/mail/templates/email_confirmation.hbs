@@ -1,8 +1,8 @@
-<html lang='en'>
+<html lang='es'>
   <head>
     <meta charset='UTF-8' />
     <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-    <title>Email Confirmation - Huecorario</title>
+    <title>Verificación de correo - Huecorario</title>
     <style>
       * {
         margin: 0;
@@ -12,170 +12,237 @@
 
       body {
         font-family:
-          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
-          Cantarell, sans-serif;
-        background: #f5f5f5;
-        min-height: 100vh;
-        padding: 20px;
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: #f8fafc;
+        color: #334155;
         line-height: 1.6;
       }
 
-      .container {
+      .email-container {
         max-width: 600px;
         margin: 0 auto;
-        background: #ffffff;
+        background-color: #ffffff;
         border-radius: 16px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        margin-top: 40px;
+        margin-bottom: 40px;
       }
 
       .header {
-        background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
-        padding: 30px;
+        background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+        padding: 40px 30px;
         text-align: center;
         color: white;
       }
 
-      .header h1 {
-        font-size: 28px;
-        font-weight: 600;
-        margin-bottom: 8px;
+      .logo {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(255, 255, 255, 0.2);
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+        margin-bottom: 16px;
+        backdrop-filter: blur(10px);
       }
 
-      .header p {
-        opacity: 0.9;
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        background-color: white;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: #0ea5e9;
+      }
+
+      .brand-name {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        letter-spacing: -0.5px;
+      }
+
+      .subtitle {
         font-size: 16px;
+        opacity: 0.9;
+        font-weight: 400;
       }
 
       .content {
         padding: 40px 30px;
-      }
-
-      .welcome-text {
         text-align: center;
-        margin-bottom: 30px;
       }
 
-      .welcome-text h2 {
-        color: #333;
+      .welcome-title {
         font-size: 24px;
-        margin-bottom: 10px;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 16px;
       }
 
-      .welcome-text p {
-        color: #666;
+      .welcome-message {
         font-size: 16px;
+        color: #64748b;
+        margin-bottom: 40px;
+        line-height: 1.5;
       }
 
-      .code-container {
-        background: #f8f9fa;
-        border: 2px dashed #e0e0e0;
+      .verification-section {
+        background-color: #f8fafc;
+        border: 2px dashed #cbd5e1;
         border-radius: 12px;
         padding: 30px;
-        margin: 30px 0;
-        text-align: center;
-        position: relative;
+        margin-bottom: 32px;
       }
 
-      .code-label {
-        color: #666;
+      .verification-label {
         font-size: 14px;
-        margin-bottom: 10px;
+        color: #64748b;
+        margin-bottom: 16px;
         font-weight: 500;
       }
 
-      .code {
-        font-size: 32px;
-        color: #4caf50;
+      .verification-code {
+        font-size: 36px;
         font-weight: 700;
-        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        color: #059669;
         letter-spacing: 8px;
-        margin: 15px 0;
+        font-family: 'Courier New', monospace;
+        margin-bottom: 16px;
       }
 
-      .info-box {
-        background: #fff3cd;
-        border: 1px solid #ffeaa7;
+      .expiry-notice {
+        background-color: #fef3c7;
+        border: 1px solid #f59e0b;
         border-radius: 8px;
-        padding: 20px;
-        margin: 25px 0;
+        padding: 16px;
+        margin-bottom: 32px;
+        text-align: left;
       }
 
-      .info-box p {
-        color: #856404;
-        margin: 0;
+      .expiry-icon {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-color: #f59e0b;
+        border-radius: 50%;
+        margin-right: 8px;
+        vertical-align: middle;
+      }
+
+      .expiry-text {
         font-size: 14px;
+        color: #92400e;
+        font-weight: 500;
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      .instructions {
+        font-size: 14px;
+        color: #64748b;
+        margin-bottom: 32px;
+        line-height: 1.5;
       }
 
       .footer {
-        background: #f8f9fa;
-        padding: 25px 30px;
+        background-color: #f1f5f9;
+        padding: 30px;
         text-align: center;
-        border-top: 1px solid #e9ecef;
+        border-top: 1px solid #e2e8f0;
       }
 
-      .footer p {
-        color: #666;
+      .support-text {
         font-size: 14px;
-        margin-bottom: 10px;
+        color: #64748b;
+        margin-bottom: 8px;
       }
 
-      .footer .support {
-        color: #4caf50;
+      .support-email {
+        color: #059669;
         text-decoration: none;
         font-weight: 500;
       }
 
-      @media (max-width: 600px) {
-        .container {
-          margin: 10px;
+      .support-email:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 640px) {
+        .email-container {
+          margin: 20px;
           border-radius: 12px;
         }
 
-        .header,
-        .content,
-        .footer {
-          padding: 20px;
+        .header {
+          padding: 30px 20px;
         }
 
-        .code {
+        .content {
+          padding: 30px 20px;
+        }
+
+        .verification-code {
           font-size: 28px;
-          letter-spacing: 6px;
+          letter-spacing: 4px;
+        }
+
+        .brand-name {
+          font-size: 24px;
         }
       }
     </style>
   </head>
   <body>
-    <div class='container'>
+    <div class='email-container'>
       <div class='header'>
-        <h1>🎓 Huecorario</h1>
-        <p>Your Academic Schedule Platform</p>
+        <div class='logo'>
+          <div class='logo-icon'>H</div>
+        </div>
+        <div class='brand-name'>Huecorario</div>
+        <div class='subtitle'>Tu Plataforma de Horarios Académicos</div>
       </div>
 
       <div class='content'>
-        <div class='welcome-text'>
-          <h2>Welcome! 🚀</h2>
-          <p>We're excited to have you join our community. Please verify your
-            email address to get started.</p>
+        <h2 class='welcome-title'>¡Bienvenido!</h2>
+        <p class='welcome-message'>
+          Nos complace tenerte en nuestra comunidad. Para completar tu registro,
+          por favor verifica tu dirección de correo electrónico usando el código
+          a continuación.
+        </p>
+
+        <div class='verification-section'>
+          <div class='verification-label'>Tu código de verificación</div>
+          <div class='verification-code'>{{code}}</div>
         </div>
 
-        <div class='code-container'>
-          <div class='code-label'>Your verification code</div>
-          <div class='code' id='verificationCode'>{{code}}</div>
+        <div class='expiry-notice'>
+          <span class='expiry-icon'></span>
+          <span class='expiry-text'>
+            Importante: Este código de verificación expirará en 10 minutos por
+            razones de seguridad. Si expira, puedes solicitar uno nuevo.
+          </span>
         </div>
 
-        <div class='info-box'>
-          <p><strong>⏰ Important:</strong>
-            This verification code will expire in 10 minutes for security
-            reasons. If it expires, you can request a new one.</p>
-        </div>
+        <p class='instructions'>
+          Ingresa este código en la pantalla de verificación de tu aplicación
+          Huecorario para completar la configuración de tu cuenta de estudiante.
+        </p>
       </div>
 
       <div class='footer'>
-        <p>Having trouble? Contact our support team</p>
+        <p class='support-text'>
+          ¿Necesitas ayuda? Contacta a nuestro equipo de soporte
+        </p>
         <a
           href='mailto:contact@edducode.me'
-          class='support'
+          class='support-email'
         >contact@edducode.me</a>
       </div>
     </div>
