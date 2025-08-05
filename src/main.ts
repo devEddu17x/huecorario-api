@@ -11,6 +11,15 @@ async function bootstrap() {
   app.use(cookieParser());
   app.use(morgan('dev'));
   const configService = app.get(ConfigService);
+  app.enableCors({
+    origin: configService.get<string[]>('api.origin'),
+    methods: 'GET,PUT,PATCH,POST',
+    credentials: true,
+  });
+
+  console.log(
+    `CORS enabled for origins: ${configService.get<string[]>('api.origin')}`,
+  );
   await app.listen(configService.get<number>('api.port'));
   console.log(`Application is running on: ${await app.getUrl()}`);
 }

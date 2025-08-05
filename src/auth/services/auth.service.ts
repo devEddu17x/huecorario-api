@@ -15,7 +15,7 @@ import { Student, StudentDocument } from 'src/student/schemas/student.schema';
 import { AuthLoginDTO } from '../dtos/login.dto';
 import { Payload } from '../interfaces/payload.interface';
 import { TokenService } from './token.service';
-import { Request, Response } from 'express';
+import { CookieOptions, Request, Response } from 'express';
 import { Token } from '../enums/tokens-name.enum';
 import { Environment } from 'src/common/enums/environment.enum';
 import { parseTimeString } from 'src/common/utils/parseTimeString';
@@ -156,39 +156,31 @@ export class AuthService {
   }
 
   async logout(res: Response) {
-    res.clearCookie(Token.ACCESS_TOKEN, {
-      path: '/',
-    });
-    res.clearCookie(Token.REFRESH_TOKEN, {
-      path: '/',
-    });
+    const cookieOptions: CookieOptions = this.getCookieOptions();
+
+    res.clearCookie(Token.ACCESS_TOKEN, cookieOptions);
+    res.clearCookie(Token.REFRESH_TOKEN, cookieOptions);
     return { message: 'Logged out successfully' };
   }
 
   private async setTokensInCookies(payload: Payload, res: Response) {
     const { accessToken, refreshToken } =
       await this.tokenService.generatePairTokens(payload);
+    const cookieOptions: CookieOptions = this.getCookieOptions();
 
-    const environment = this.configService.get<string>('app.environment');
+    res.cookie(Token.ACCESS_TOKEN, accessToken, cookieOptions);
+    res.cookie(Token.REFRESH_TOKEN, refreshToken, cookieOptions);
+  }
 
-    res.cookie(Token.ACCESS_TOKEN, accessToken, {
+  private getCookieOptions(): CookieOptions {
+    const env = this.configService.get<string>('app.environment');
+    const isProd = env === Environment.PRODUCTION;
+    return {
       httpOnly: true,
-      secure: environment == Environment.PRODUCTION,
-      sameSite: environment == Environment.PRODUCTION ? 'none' : 'lax',
-      maxAge: parseTimeString(
-        this.configService.get<string>('jwt.accessExpiresIn'),
-      ),
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
+      domain: this.configService.get<string>('api.domain'),
       path: '/',
-    });
-
-    res.cookie(Token.REFRESH_TOKEN, refreshToken, {
-      httpOnly: true,
-      secure: environment == Environment.PRODUCTION,
-      sameSite: environment == Environment.PRODUCTION ? 'none' : 'lax',
-      maxAge: parseTimeString(
-        this.configService.get<string>('jwt.refreshExpiresIn'),
-      ),
-      path: '/',
-    });
+    };
   }
 }
