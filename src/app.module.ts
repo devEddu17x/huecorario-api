@@ -18,7 +18,7 @@ import { SignatureModule } from './signature/signature.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env.development.local', '.env'],
+      envFilePath: ['.env.production.local', '.env'],
       load: [
         config.authConfig,
         config.databaseConfig,
