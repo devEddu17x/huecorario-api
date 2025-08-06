@@ -158,8 +158,8 @@ export class AuthService {
   async logout(res: Response) {
     const cookieOptions: CookieOptions = this.getCookieOptions();
 
-    res.clearCookie(Token.ACCESS_TOKEN, cookieOptions);
-    res.clearCookie(Token.REFRESH_TOKEN, cookieOptions);
+    res.cookie(Token.ACCESS_TOKEN, '', { ...cookieOptions, maxAge: 0 });
+    res.cookie(Token.REFRESH_TOKEN, '', { ...cookieOptions, maxAge: 0 });
     return { message: 'Logged out successfully' };
   }
 
@@ -175,6 +175,7 @@ export class AuthService {
   private getCookieOptions(): CookieOptions {
     const env = this.configService.get<string>('app.environment');
     const isProd = env === Environment.PRODUCTION;
+    console.log('DOMAIN: ', this.configService.get<string>('api.domain'));
     return {
       httpOnly: true,
       secure: isProd,
