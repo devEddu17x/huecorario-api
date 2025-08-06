@@ -5,6 +5,6 @@ export default registerAs('api', () => {
   return {
     port: PORT ? parseInt(PORT, 10) : 8000,
     origin: ORIGIN ? ORIGIN.split(',') : ['http://localhost:3000'],
-    domain: DOMAIN || 'http://localhost:3000',
+    domain: DOMAIN,
   };
 });

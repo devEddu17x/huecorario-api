@@ -40,25 +40,15 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background-color: rgba(255, 255, 255, 0.2);
         width: 64px;
         height: 64px;
-        border-radius: 16px;
         margin-bottom: 16px;
-        backdrop-filter: blur(10px);
       }
 
-      .logo-icon {
-        width: 32px;
-        height: 32px;
-        background-color: white;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        font-weight: bold;
-        color: #0ea5e9;
+      .logo-svg {
+        width: 64px;
+        height: 64px;
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
       }
 
       .brand-name {
@@ -203,7 +193,38 @@
     <div class='email-container'>
       <div class='header'>
         <div class='logo'>
-          <div class='logo-icon'>H</div>
+          <svg
+            class='logo-svg'
+            width='64'
+            height='64'
+            viewBox='0 0 64 64'
+            xmlns='http://www.w3.org/2000/svg'
+          >
+            <defs>
+              <linearGradient
+                id='huecorarioGradient'
+                x1='0%'
+                y1='0%'
+                x2='0%'
+                y2='100%'
+              >
+                <stop offset='0%' stop-color='#00B2FF' />
+                <stop offset='100%' stop-color='#007BFF' />
+              </linearGradient>
+            </defs>
+            <!-- Fondo cuadrado redondeado -->
+            <rect
+              width='64'
+              height='64'
+              rx='16'
+              fill='url(#huecorarioGradient)'
+            />
+            <!-- H más grande, con palo horizontal más delgado -->
+            <path
+              d='M21 14c-1.1 0-2 .9-2 2v32c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2v-10h10v10c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2V16c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v10H27V16c0-1.1-.9-2-2-2h-4z'
+              fill='white'
+            />
+          </svg>
         </div>
         <div class='brand-name'>Huecorario</div>
         <div class='subtitle'>Tu Plataforma de Horarios Académicos</div>
