@@ -9,7 +9,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('api');
   app.use(cookieParser());
-  app.use(morgan('dev'));
+  app.use(morgan('combined'));
   const configService = app.get(ConfigService);
   app.enableCors({
     origin: configService.get<string[]>('api.origin'),
