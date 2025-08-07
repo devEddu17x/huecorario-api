@@ -1,7 +1,7 @@
-<html lang='es'>
+<html lang="es">
   <head>
-    <meta charset='UTF-8' />
-    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Verificación de correo - Huecorario</title>
     <style>
       * {
@@ -45,9 +45,10 @@
         margin-bottom: 16px;
       }
 
-      .logo-svg {
+      .logo-img {
         width: 64px;
         height: 64px;
+        border-radius: 16px;
         filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
       }
 
@@ -190,81 +191,55 @@
     </style>
   </head>
   <body>
-    <div class='email-container'>
-      <div class='header'>
-        <div class='logo'>
-          <svg
-            class='logo-svg'
-            width='64'
-            height='64'
-            viewBox='0 0 64 64'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <defs>
-              <linearGradient
-                id='huecorarioGradient'
-                x1='0%'
-                y1='0%'
-                x2='0%'
-                y2='100%'
-              >
-                <stop offset='0%' stop-color='#00B2FF' />
-                <stop offset='100%' stop-color='#007BFF' />
-              </linearGradient>
-            </defs>
-            <!-- Fondo cuadrado redondeado -->
-            <rect
-              width='64'
-              height='64'
-              rx='16'
-              fill='url(#huecorarioGradient)'
-            />
-            <!-- H más grande, con palo horizontal más delgado -->
-            <path
-              d='M21 14c-1.1 0-2 .9-2 2v32c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2v-10h10v10c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2V16c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v10H27V16c0-1.1-.9-2-2-2h-4z'
-              fill='white'
-            />
-          </svg>
+    <div class="email-container">
+      <div class="header">
+        <div class="logo">
+          <img
+            class="logo-img"
+            src="https://public-assets.edducode.me/public-assets/logo.png"
+            alt="Huecorario Logo"
+            width="64"
+            height="64"
+          />
         </div>
-        <div class='brand-name'>Huecorario</div>
-        <div class='subtitle'>Tu Plataforma de Horarios Académicos</div>
+        <div class="brand-name">Huecorario</div>
+        <div class="subtitle">Tu Plataforma de Horarios Académicos</div>
       </div>
 
-      <div class='content'>
-        <h2 class='welcome-title'>¡Bienvenido!</h2>
-        <p class='welcome-message'>
+      <div class="content">
+        <h2 class="welcome-title">¡Bienvenido!</h2>
+        <p class="welcome-message">
           Nos complace tenerte en nuestra comunidad. Para completar tu registro,
           por favor verifica tu dirección de correo electrónico usando el código
           a continuación.
         </p>
 
-        <div class='verification-section'>
-          <div class='verification-label'>Tu código de verificación</div>
-          <div class='verification-code'>{{code}}</div>
+        <div class="verification-section">
+          <div class="verification-label">Tu código de verificación</div>
+          <div class="verification-code">{{code}}</div>
         </div>
 
-        <div class='expiry-notice'>
-          <span class='expiry-icon'></span>
-          <span class='expiry-text'>
+        <div class="expiry-notice">
+          <span class="expiry-icon"></span>
+          <span class="expiry-text">
             Importante: Este código de verificación expirará en 10 minutos por
             razones de seguridad. Si expira, puedes solicitar uno nuevo.
           </span>
         </div>
 
-        <p class='instructions'>
+        <p class="instructions">
           Ingresa este código en la pantalla de verificación de tu aplicación
           Huecorario para completar la configuración de tu cuenta de estudiante.
         </p>
       </div>
 
-      <div class='footer'>
-        <p class='support-text'>
+      <div class="footer">
+        <p class="support-text">
           ¿Necesitas ayuda? Contacta a nuestro equipo de soporte
         </p>
-        <a
-          href='mailto:contact@edducode.me'
-          class='support-email'
-        >contact@edducode.me</a>
+        <a href="mailto:contact@edducode.me" class="support-email"
+          >contact@edducode.me</a
+        >
       </div>
     </div>
   </body>
