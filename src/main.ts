@@ -8,6 +8,7 @@ import { Request, Response, NextFunction } from 'express';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
+  app.use(morgan('combined'));
   app.use((req: Request, res: Response, next: NextFunction) => {
     const suspiciousPaths = [
       /\/\.[^/]+/, // archivos ocultos (.env, .git, etc)
@@ -31,7 +32,6 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('api');
   app.use(cookieParser());
-  app.use(morgan('combined'));
   app.use(/^\/\.[^/]+/, (req, res) => res.sendStatus(401));
   const configService = app.get(ConfigService);
   app.enableCors({
