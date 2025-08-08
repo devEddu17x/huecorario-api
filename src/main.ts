@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import * as morgan from 'morgan';
 import { Request, Response, NextFunction } from 'express';
@@ -9,6 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.use(morgan('combined'));
+  const securityLogger = new Logger('Security');
   app.use((req: Request, res: Response, next: NextFunction) => {
     const suspiciousPaths = [
       /\/\.[^/]+/, // archivos ocultos (.env, .git, etc)
@@ -24,7 +25,9 @@ async function bootstrap() {
 
     if (suspiciousPaths.some((pattern) => pattern.test(req.path))) {
       // Log del intento sospechoso
-      console.warn(`Suspicious access attempt: ${req.ip} -> ${req.path}`);
+      securityLogger.warn(
+        `Blocked: ${req.ip} -> ${req.method} ${req.path} [${req.get('User-Agent') || 'Unknown'}]`,
+      );
       return res.status(401).json({ message: 'Nice try but no :*' });
     }
 

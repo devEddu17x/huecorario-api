@@ -22,11 +22,11 @@ import { APP_GUARD } from '@nestjs/core';
     ThrottlerModule.forRoot([
       {
         ttl: 60000, // 1 minuto
-        limit: 20, // máximo 20 requests por minuto por IP
+        limit: 15, // máximo 20 requests por minuto por IP
       },
     ]),
     ConfigModule.forRoot({
-      envFilePath: ['.env.production.local', '.env'],
+      envFilePath: ['.env.development.local', '.env'],
       load: [
         config.authConfig,
         config.databaseConfig,
