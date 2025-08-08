@@ -4,12 +4,35 @@ import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import * as morgan from 'morgan';
+import { Request, Response, NextFunction } from 'express';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    const suspiciousPaths = [
+      /\/\.[^/]+/, // archivos ocultos (.env, .git, etc)
+      /\/(admin|wp-admin)/i, // rutas de admin
+      /\/aws/i, // rutas AWS
+      /\/docker/i, // rutas Docker
+      /\/\.well-known/, // except for legitimate use
+      /\/config/i, // archivos de configuración
+      /\/backup/i, // backups
+      /\/secret/i, // secretos
+      /\/api\/v[0-9]/, // versiones de API no existentes
+    ];
+
+    if (suspiciousPaths.some((pattern) => pattern.test(req.path))) {
+      // Log del intento sospechoso
+      console.warn(`Suspicious access attempt: ${req.ip} -> ${req.path}`);
+      return res.status(401).json({ message: 'Nice try but no :*' });
+    }
+
+    next();
+  });
   app.setGlobalPrefix('api');
   app.use(cookieParser());
   app.use(morgan('combined'));
+  app.use(/^\/\.[^/]+/, (req, res) => res.sendStatus(401));
   const configService = app.get(ConfigService);
   app.enableCors({
     origin: configService.get<string[]>('api.origin'),

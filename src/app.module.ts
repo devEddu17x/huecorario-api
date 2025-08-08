@@ -15,8 +15,16 @@ import { ScheduleModule } from './schedule/schedule.module';
 import { OwnScheduleModule } from './own-schedule/own-cycle-schedule.module';
 import { StorageModule } from './storage/storage.module';
 import { SignatureModule } from './signature/signature.module';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 @Module({
   imports: [
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000, // 1 minuto
+        limit: 20, // máximo 20 requests por minuto por IP
+      },
+    ]),
     ConfigModule.forRoot({
       envFilePath: ['.env.production.local', '.env'],
       load: [
@@ -53,6 +61,12 @@ import { SignatureModule } from './signature/signature.module';
     SignatureModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
